@@ -1,0 +1,25 @@
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+// Variables
+@import 'variables';
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+#app {
+    margin-left: 280px;
+}
+
+#navbar {
+    margin-left: 280px;
+}
+
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 1;
+    display: flex;
+    background: $white;
+    width: 280px;
+    border: 1px solid lightgrey;
+}
