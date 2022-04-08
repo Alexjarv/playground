@@ -39,7 +39,7 @@ function Navbar() {
                         :
                         <li className="nav-item dropdown">
                             <a id="navbarDropdown" className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre="true">
-                                {user.name ? user.name : 'Guest'}
+                                {user.user ? user.user.name : 'Guest'}
                             </a>
 
                             <div className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
@@ -53,7 +53,7 @@ function Navbar() {
 
                                 <form id="logout-form" action="/logout" method="POST" className="d-none">
                                     {/* csrf */}
-                                    <input type="hidden" name="_token" value="" wfd-invisible="true"></input>
+                                    <input type="hidden" name="_token" value={document.querySelector('meta[name="csrf-token"]').content} wfd-invisible="true"></input>
                                 </form>
                             </div>
                         </li>
