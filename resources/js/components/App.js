@@ -22,19 +22,15 @@ const App = observer(() => {
                 user.setIsAuth(true);
                 user.setUser(res.data);
             }
-            console.log(res.data);
         }).finally(() => {
             setLoading(false);
         })
     })
 
-    if(loading){
-        return <Spinner animation={'border'} variant={'primary'}/>
-    }
     return (
           <BrowserRouter>
               <Sidebar/>
-              <Navbar/>
+              <Navbar loading={loading}/>
               <AppRouter/>
           </BrowserRouter>
     );

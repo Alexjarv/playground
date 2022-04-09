@@ -1,16 +1,26 @@
 import { $authHost, $host } from "./index";
 
-export const register = async (email, password) => {
-    const response = await $host.post('register')
+export const register = async (name, email, password, password_confirmation, token) => {
+    const response = await $host.post('register', {name, email, password, password_confirmation, token})
     return response
 }
 
-export const login = async (email, password, token) => {
-    const {response} = await $host.post('login',  {email, password, token})
+export const login = async (email, password, remember, token) => {
+    const response = await $host.post('login',  {email, password, remember, token})
     return response
 }
 
-export const logout = async () => {
+export const forgot = async (email, token) => {
+    const response = await $host.post('email',  {email, token})
+    return response
+}
+
+export const reset = async (email, password, remember, token) => {
+    const response = await $host.post('reset',  {email, password, remember, token})
+    return response
+}
+
+export const logout = async (token) => {
     const response = await $host.post('logout')
     return response
 }

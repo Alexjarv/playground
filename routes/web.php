@@ -47,13 +47,13 @@ Route::get('register', [App\Http\Controllers\Auth\RegisterController::class, 'sh
 
 // Password Reset Routes...
 Route::get('password/reset', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'showLinkRequestForm']);
-Route::post('password/email', [App\Http\Controllers\Auth\ForgotPasswordController::class, 'sendResetLinkEmail']);
 Route::get('password/reset/{token}', [App\Http\Controllers\Auth\ResetPasswordController::class, 'showResetForm']);
-Route::post('password/reset', [App\Http\Controllers\Auth\ResetPasswordController::class, 'reset']);
 
 Route::group(['middleware' => 'CORS'], function ($router) {
-    Route::post('/register', [App\Http\Controllers\UserController::class, 'register'])->name('register.user');
-    Route::post('/login', [App\Http\Controllers\UserController::class, 'login'])->name('login.user');
+    Route::post('login', [App\Http\Controllers\UserController::class, 'login'])->name('login.user');
+    Route::post('register', [App\Http\Controllers\UserController::class, 'register'])->name('register.user');
+    Route::post('password/reset', [App\Http\Controllers\UserController::class, 'reset'])->name('reset.user');
+    Route::post('password/email', [App\Http\Controllers\UserController::class, 'forgotPassword'])->name('forgot.user');
 });
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

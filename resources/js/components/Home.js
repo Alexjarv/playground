@@ -1,6 +1,17 @@
-import React from 'react';
+import { observer } from 'mobx-react-lite';
+import React, { useEffect } from 'react';
+import { getCrypto } from '../http/cryptoAPI';
 
-function Home() {
+const Home = observer(() => {
+
+    useEffect(() => {
+        getCrypto('BTC,ETH,XRP', '30d').then(res => {
+            console.log(res);
+        }).finally((e) => {
+            console.log(e);
+        })
+    })
+
     return (
         <div className="container mt-5">
             <div className="row justify-content-center">
@@ -13,7 +24,7 @@ function Home() {
             </div>
         </div>
     );
-}
+})
 
 export default Home;
 

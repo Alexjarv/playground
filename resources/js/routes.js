@@ -1,9 +1,7 @@
 import {HOME_ROUTE, ADMIN_ROUTE, LOGIN_ROUTE, REGISTRATION_ROUTE, RESET_ROUTE} from "./utils/consts";
 
 import Home from "./components/Home";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Reset from "./pages/Reset";
+import Auth from "./pages/Auth";
 //import Admin from "./components/Admin";
 
 export const authRoutes = [
@@ -22,14 +20,14 @@ export const publicRoutes = [
     },
     {
         path: LOGIN_ROUTE,
-        Component: Login
+        Component: Auth
     },
     {
         path: REGISTRATION_ROUTE,
-        Component: Register
+        Component: Auth
     },
     {
         path: RESET_ROUTE,
-        Component: Reset
+        Component: Auth
     },
 ];

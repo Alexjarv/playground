@@ -23,6 +23,9 @@
     <div id="app">
 
     </div>
+    <div style="position: fixed; bottom: 0; left:20%; right:0;">
+        {{ print_r(session()->all()) }}
+    </div>
 
     @if (Auth::check())
         <div style="position: absolute; left: 100px; bottom: 100px; z-index: 500; background:aquamarine">{{ Auth::user()->name }}</div>

@@ -1,16 +1,19 @@
 import React, { useContext } from 'react';
-import { useLocation } from 'react-router-dom';
+import Spinner from 'react-bootstrap/esm/Spinner';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Context } from '../app';
+import { LOGIN_ROUTE, REGISTRATION_ROUTE } from '../utils/consts';
 
-function Navbar() {
+function Navbar(props) {
 
+    const navigate = useNavigate();
     const {user} = useContext(Context);
     const location = useLocation();
 
     return (
         <nav className="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div className="container">
-                <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+                <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>
                 </button>
 
@@ -25,38 +28,45 @@ function Navbar() {
 
                         {/* Authentication Links */}
 
-                        {/* if guest */}
-                        {!user.isAuth ?
-                                <>
-                                <li className="nav-item">
-                                    <a className="nav-link" href="/login">Login</a>
-                                </li>
-
-                                <li className="nav-item">
-                                <a className="nav-link" href="/register">Register</a>
-                                </li>
-                                </>
+                        {/* loading user? */}
+                        {props.loading ?
+                            <Spinner animation={'border'} variant={'primary'}/>
                         :
-                        <li className="nav-item dropdown">
-                            <a id="navbarDropdown" className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre="true">
-                                {user.user ? user.user.name : 'Guest'}
-                            </a>
+                        <>
+                            {/* if guest */}
+                            {!user.isAuth ?
+                                    <>
+                                    <li className="nav-item">
+                                        <a className="nav-link" onClick={(e) => {e.preventDefault(), navigate(LOGIN_ROUTE)}} href={LOGIN_ROUTE}>Login</a>
+                                    </li>
 
-                            <div className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <a className="dropdown-item" href="/logout"
-                                onClick={(event) => {
-                                    event.preventDefault(); document.getElementById('logout-form').submit()
-                                }}>
-
-                                    Logout
+                                    <li className="nav-item">
+                                    <a className="nav-link" onClick={(e) => {e.preventDefault(), navigate(REGISTRATION_ROUTE)}} href={REGISTRATION_ROUTE}>Register</a>
+                                    </li>
+                                    </>
+                            :
+                            <li className="nav-item dropdown">
+                                <a id="navbarDropdown" className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre="true">
+                                    {user.user ? user.user.name : 'Guest'}
                                 </a>
 
-                                <form id="logout-form" action="/logout" method="POST" className="d-none">
-                                    {/* csrf */}
-                                    <input type="hidden" name="_token" value={document.querySelector('meta[name="csrf-token"]').content} wfd-invisible="true"></input>
-                                </form>
-                            </div>
-                        </li>
+                                <div className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                                    <a className="dropdown-item" href="/logout"
+                                    onClick={(event) => {
+                                        event.preventDefault(); document.getElementById('logout-form').submit()
+                                    }}>
+
+                                        Logout
+                                    </a>
+
+                                    <form id="logout-form" action="/logout" method="POST" className="d-none">
+                                        {/* csrf */}
+                                        <input type="hidden" name="_token" value={document.querySelector('meta[name="csrf-token"]').content} wfd-invisible="true"></input>
+                                    </form>
+                                </div>
+                            </li>
+                            }
+                        </>
                         }
                     </ul>
                 </div>

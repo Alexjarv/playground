@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Routing\Controller as BaseController;
 use App\Models\User;
+use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth as Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class UserController extends BaseController
 {
@@ -15,7 +18,7 @@ class UserController extends BaseController
 
     public function __construct()
     {
-        $this->middleware("auth:api", ["except" => "login", "register"]);
+        $this->middleware(['auth' => 'verified'])->except(["except" => "login", "register"]);
         $this->user = new User();
     }
 
@@ -51,7 +54,7 @@ class UserController extends BaseController
 
         if($user){
 
-            if(!Auth::attempt($credentials)){
+            if(!Auth::attempt($credentials, $request->remember)){
 
                 $responseMessage = "Invalid username or password";
 
@@ -79,4 +82,71 @@ class UserController extends BaseController
         }
     }
 
+    public function register(Request $request){
+
+        $validator = Validator::make($request->all(),[
+            'name' => 'required|string',
+            'email' => 'required|string|unique:users',
+            'password' => 'required|min:6|confirmed',
+        ]);
+
+        if($validator->fails()){
+            return response()->json([
+                'success' => false,
+                'message' => $validator->failed()
+            ], 500);
+        }
+
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        $this->user = $user;
+
+        $responseMessage = "Registration Successful";
+        $accessToken = $user->createToken('authToken')->accessToken;
+
+        return $this->respondWithToken($accessToken, $responseMessage, $user);
+    }
+
+    public function forgotPassword(Request $request){
+
+        $request->validate(['email' => 'required|email']);
+
+        $status = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        return $status === Password::RESET_LINK_SENT
+                ? back()->with(['status' => __($status)])
+                : back()->withErrors(['email' => __($status)]);
+    }
+
+    public function reset(Request $request){
+
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|min:8|confirmed',
+        ]);
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->forceFill([
+                    'password' => Hash::make($password)
+                ])->setRememberToken(Str::random(60));
+
+                $user->save();
+
+                event(new PasswordReset($user));
+            }
+        );
+
+        return $status === Password::PASSWORD_RESET
+                    ? back()->with('status', __($status))
+                    : back()->withErrors(['email' => [__($status)]]);
+    }
 }

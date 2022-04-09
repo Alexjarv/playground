@@ -23,9 +23,7 @@ require('./components/Home');
 require('./components/Navbar');
 require('./components/Sidebar');
 require('./components/App');
-require('./pages/Login');
-require('./pages/Register');
-require('./pages/Reset');
+require('./pages/Auth');
 
 if (document.getElementById('app')) {
     ReactDOM.render(
